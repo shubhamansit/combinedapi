@@ -36,8 +36,8 @@ export default function VehicleTrackingDashboard() {
 
       const platformURL =
         selectedPlatform === "all"
-          ? "http://localhost:5000/api/vehicles"
-          : `http://localhost:5000/api/vehicle/${selectedPlatform}`;
+          ? "http://combinedapi-production.up.railway.app/api/vehicles"
+          : `http://combinedapi-production.up.railway.app/api/vehicle/${selectedPlatform}`;
 
       setLoading(true); // Start loading
 
