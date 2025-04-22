@@ -210,14 +210,14 @@ export default function VehicleTrackingDashboard() {
               <Select
                 options={[
                   { label: "All", value: "all" },
-                  { label: "ansgujarat", value: "ansgujarat" },
-                  { label: "coretrack", value: "coretrack" },
-                  { label: "libi35", value: "libi35" },
-                  { label: "smartbus", value: "smartbus" },
-                  { label: "taaseye", value: "taaseye" },
-                  { label: "advance55", value: "advance55" },
-                  { label: "gp", value: "gp" },
-                  { label: "praygraj", value: "praygraj" },
+                  { label: "One", value: "ansgujarat" },
+                  { label: "Coretrack", value: "coretrack" },
+                  { label: "Libi35", value: "libi35" },
+                  { label: "Smartbus", value: "smartbus" },
+                  { label: "Taaskeye", value: "taaseye" },
+                  { label: "Advance55", value: "advance55" },
+                  { label: "Gujarat Police", value: "gp" },
+                  { label: "Prayagraj", value: "praygraj" },
                 ]}
                 value={{
                   label: selectedPlatform === "all" ? "All" : selectedPlatform,
@@ -444,7 +444,7 @@ export default function VehicleTrackingDashboard() {
                   onClick={() => handleSort("Vehicle Last updated DateTime")}
                 >
                   <div className="flex items-center">
-                    Instalation Date
+                    Installation Date
                     {sortConfig.key === "Vehicle Last updated DateTime" &&
                       (sortConfig.direction === "ascending" ? (
                         <ChevronUp size={16} className="ml-1" />
