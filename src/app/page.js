@@ -36,8 +36,8 @@ export default function VehicleTrackingDashboard() {
 
       const platformURL =
         selectedPlatform === "all"
-          ? "http://combinedapi-production.up.railway.app/api/vehicles"
-          : `http://combinedapi-production.up.railway.app/api/vehicle/${selectedPlatform}`;
+          ? "https://combinedapi-production.up.railway.app/api/vehicles"
+          : `https://combinedapi-production.up.railway.app/api/vehicle/${selectedPlatform}`;
 
       setLoading(true); // Start loading
 
@@ -220,7 +220,22 @@ export default function VehicleTrackingDashboard() {
                   { label: "Prayagraj", value: "praygraj" },
                 ]}
                 value={{
-                  label: selectedPlatform === "all" ? "All" : selectedPlatform,
+                  label:
+                    selectedPlatform === "all"
+                      ? "All"
+                      : [
+                          { label: "All", value: "all" },
+                          { label: "One", value: "ansgujarat" },
+                          { label: "Coretrack", value: "coretrack" },
+                          { label: "Libi35", value: "libi35" },
+                          { label: "Smartbus", value: "smartbus" },
+                          { label: "Taaskeye", value: "taaseye" },
+                          { label: "Advance55", value: "advance55" },
+                          { label: "Gujarat Police", value: "gp" },
+                          { label: "Prayagraj", value: "praygraj" },
+                        ].find((item) => {
+                          return item.value == selectedPlatform;
+                        }).label,
                   value: selectedPlatform,
                 }}
                 onChange={(selected) =>
