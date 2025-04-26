@@ -36,8 +36,8 @@ export default function VehicleTrackingDashboard() {
 
       const platformURL =
         selectedPlatform === "all"
-          ? "https://combinedapi-production.up.railway.app/api/vehicles"
-          : `https://combinedapi-production.up.railway.app/api/vehicle/${selectedPlatform}`;
+          ? "http://localhost:5000/api/vehicles"
+          : `http://localhost:5000/api/vehicle/${selectedPlatform}`;
 
       setLoading(true); // Start loading
 
@@ -68,6 +68,9 @@ export default function VehicleTrackingDashboard() {
 
     getvehicledata();
   }, [selectedPlatform]);
+
+  console.log(filteredVehicles);
+
   // Apply filters and search
   useEffect(() => {
     let result = [...vehicles];
@@ -205,7 +208,7 @@ export default function VehicleTrackingDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Platform
+                Server
               </label>
               <Select
                 options={[
@@ -266,7 +269,7 @@ export default function VehicleTrackingDashboard() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Project ({getUniqueValues("Project").length})
+                Platform ({getUniqueValues("Project").length})
               </label>
               <Select
                 options={getUniqueValues("Project").map((project) => ({
@@ -348,6 +351,22 @@ export default function VehicleTrackingDashboard() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                  onClick={() => handleSort("Server")}
+                >
+                  <div className="flex items-center">
+                    Server
+                    {sortConfig.key === "Server" &&
+                      (sortConfig.direction === "ascending" ? (
+                        <ChevronUp size={16} className="ml-1" />
+                      ) : (
+                        <ChevronDown size={16} className="ml-1" />
+                      ))}
+                  </div>
+                </th>
+
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -487,8 +506,159 @@ export default function VehicleTrackingDashboard() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredVehicles.length > 0 ? (
-                filteredVehicles.map((vehicle, index) => (
+                filteredVehicles?.map((vehicle, index) => (
                   <tr key={index} className="hover:bg-gray-50">
+                    {selectedPlatform === "all" ? (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <a
+                          className="underline text-purple-500"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={
+                            [
+                              {
+                                value: "ansgujarat",
+                                ip: "https://one.ansitindia.com",
+                              },
+                              {
+                                value: "coretrack",
+                                ip: "https://coretracksys.com",
+                              },
+                              { value: "libi35", ip: "http://13.232.250.35" },
+                              { value: "smartbus", ip: "http://15.207.194.31" },
+                              { value: "taaseye", ip: "http://13.202.116.8" },
+                              { value: "advance55", ip: "http://13.127.89.55" },
+                              { value: "gp", ip: "http://13.235.92.112" },
+                              { value: "praygraj", ip: "http://15.206.7.97" },
+                            ]?.find((item) => {
+                              return item.value == vehicle["domain"];
+                            })?.ip
+                          }
+                        >
+                          {
+                            [
+                              {
+                                label: "One",
+                                value: "ansgujarat",
+                                ip: "https://one.ansitindia.com",
+                              },
+                              {
+                                label: "Coretrack",
+                                value: "coretrack",
+                                ip: "https://coretracksys.com",
+                              },
+                              {
+                                label: "Libi35",
+                                value: "libi35",
+                                ip: "http://13.232.250.35",
+                              },
+                              {
+                                label: "Smartbus",
+                                value: "smartbus",
+                                ip: "http://15.207.194.31",
+                              },
+                              {
+                                label: "Taaskeye",
+                                value: "taaseye",
+                                ip: "http://13.202.116.8",
+                              },
+                              {
+                                label: "Advance55",
+                                value: "advance55",
+                                ip: "http://13.127.89.55",
+                              },
+                              {
+                                label: "Gujarat Police",
+                                value: "gp",
+                                ip: "http://13.235.92.112",
+                              },
+                              {
+                                label: "Prayagraj",
+                                value: "praygraj",
+                                ip: "http://15.206.7.97",
+                              },
+                            ]?.find((item) => {
+                              return item.value == vehicle["domain"];
+                            })?.label
+                          }
+                        </a>
+                      </td>
+                    ) : (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        <a
+                          className="underline text-purple-500"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={
+                            [
+                              {
+                                value: "ansgujarat",
+                                ip: "https://one.ansitindia.com",
+                              },
+                              {
+                                value: "coretrack",
+                                ip: "https://coretracksys.com",
+                              },
+                              { value: "libi35", ip: "http://13.232.250.35" },
+                              { value: "smartbus", ip: "http://15.207.194.31" },
+                              { value: "taaseye", ip: "http://13.202.116.8" },
+                              { value: "advance55", ip: "http://13.127.89.55" },
+                              { value: "gp", ip: "http://13.235.92.112" },
+                              { value: "praygraj", ip: "http://15.206.7.97" },
+                            ]?.find((item) => {
+                              return item.value == selectedPlatform;
+                            })?.ip
+                          }
+                        >
+                          {
+                            [
+                              {
+                                label: "One",
+                                value: "ansgujarat",
+                                ip: "https://one.ansitindia.com",
+                              },
+                              {
+                                label: "Coretrack",
+                                value: "coretrack",
+                                ip: "https://coretracksys.com",
+                              },
+                              {
+                                label: "Libi35",
+                                value: "libi35",
+                                ip: "http://13.232.250.35",
+                              },
+                              {
+                                label: "Smartbus",
+                                value: "smartbus",
+                                ip: "http://15.207.194.31",
+                              },
+                              {
+                                label: "Taaskeye",
+                                value: "taaseye",
+                                ip: "http://13.202.116.8",
+                              },
+                              {
+                                label: "Advance55",
+                                value: "advance55",
+                                ip: "http://13.127.89.55",
+                              },
+                              {
+                                label: "Gujarat Police",
+                                value: "gp",
+                                ip: "http://13.235.92.112",
+                              },
+                              {
+                                label: "Prayagraj",
+                                value: "praygraj",
+                                ip: "http://15.206.7.97",
+                              },
+                            ]?.find((item) => {
+                              return item.value == selectedPlatform;
+                            })?.label
+                          }
+                        </a>
+                      </td>
+                    )}
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {vehicle["Vehicle no"]}
                     </td>
