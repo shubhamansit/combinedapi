@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Search, ChevronDown, ChevronUp, Filter } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, Filter, Check } from "lucide-react";
 import Select from "react-select";
 import * as XLSX from "xlsx";
 
@@ -21,15 +21,58 @@ export default function VehicleTrackingDashboard() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState("all");
   const [loading, setLoading] = useState(false);
+  // Add state for selected vehicles
+  const [selectedVehicles, setSelectedVehicles] = useState({});
+  // Add state for "select all" checkbox
+  const [selectAll, setSelectAll] = useState(false);
 
+  // Modified export function to only export selected vehicles
   const exportToExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(filteredVehicles);
+    // Get selected vehicles as an array
+    const vehiclesToExport = filteredVehicles.filter(
+      (vehicle, index) => selectedVehicles[index]
+    );
+
+    if (vehiclesToExport.length === 0) {
+      alert("Please select at least one vehicle to export");
+      return;
+    }
+
+    const ws = XLSX.utils.json_to_sheet(vehiclesToExport);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Vehicles");
 
     // Generate and download the file
     XLSX.writeFile(wb, "VehicleData.xlsx");
   };
+
+  // Handle toggling a single checkbox
+  const toggleVehicleSelection = (index) => {
+    setSelectedVehicles((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
+  // Handle "select all" checkbox
+  const toggleSelectAll = () => {
+    const newSelectAll = !selectAll;
+    setSelectAll(newSelectAll);
+
+    const newSelectedVehicles = {};
+    filteredVehicles.forEach((_, index) => {
+      newSelectedVehicles[index] = newSelectAll;
+    });
+
+    setSelectedVehicles(newSelectedVehicles);
+  };
+
+  // Reset selections when filters change
+  useEffect(() => {
+    setSelectedVehicles({});
+    setSelectAll(false);
+  }, [filteredVehicles.length]);
+
   useEffect(() => {
     async function getvehicledata() {
       console.log(selectedPlatform, "selectedPlatform");
@@ -159,6 +202,9 @@ export default function VehicleTrackingDashboard() {
     }));
   };
 
+  // Get count of selected vehicles
+  const selectedCount = Object.values(selectedVehicles).filter(Boolean).length;
+
   return (
     <div className="flex flex-col w-full p-4 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold mb-6 text-gray-800">
@@ -193,7 +239,7 @@ export default function VehicleTrackingDashboard() {
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
               onClick={exportToExcel}
             >
-              Export to Excel
+              Export Selected ({selectedCount})
             </button>
             <button
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
@@ -337,7 +383,8 @@ export default function VehicleTrackingDashboard() {
       </div>
 
       <div className="mb-4 text-sm text-gray-600">
-        Showing {filteredVehicles.length} of {vehicles.length} vehicles
+        Showing {filteredVehicles.length} of {vehicles.length} vehicles •{" "}
+        {selectedCount} selected
       </div>
 
       {loading ? (
@@ -351,6 +398,16 @@ export default function VehicleTrackingDashboard() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                      checked={selectAll}
+                      onChange={toggleSelectAll}
+                    />
+                  </div>
+                </th>
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -366,7 +423,6 @@ export default function VehicleTrackingDashboard() {
                       ))}
                   </div>
                 </th>
-
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
@@ -507,7 +563,20 @@ export default function VehicleTrackingDashboard() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredVehicles.length > 0 ? (
                 filteredVehicles?.map((vehicle, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
+                  <tr
+                    key={index}
+                    className={`hover:bg-gray-50 ${
+                      selectedVehicles[index] ? "bg-blue-50" : ""
+                    }`}
+                  >
+                    <td className="px-4 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        checked={selectedVehicles[index] || false}
+                        onChange={() => toggleVehicleSelection(index)}
+                      />
+                    </td>
                     {selectedPlatform === "all" ? (
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         <a
@@ -702,7 +771,7 @@ export default function VehicleTrackingDashboard() {
               ) : (
                 <tr>
                   <td
-                    colSpan="7"
+                    colSpan="11"
                     className="px-6 py-4 text-center text-sm text-gray-500"
                   >
                     No vehicles found matching your criteria
@@ -713,7 +782,6 @@ export default function VehicleTrackingDashboard() {
           </table>
         </div>
       )}
-      {/* Details section */}
     </div>
   );
 }
